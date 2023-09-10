@@ -26,13 +26,6 @@ const tulisPertanyaan = (pertanyaan) => {
 		});
 	});
 };
-// const pertanyaan2 = () => {
-// 	return new Promise((resolve, reject)=>{
-// 		rl.question('Masukkan Email anda : ', (email)=>{
-// 			resolve(email);
-// 		});
-// 	});
-// };
 
 const main = async() =>{
 	const nama = await tulisPertanyaan('Masukkan nama anda : ');
