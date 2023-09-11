@@ -14,10 +14,15 @@ if(!fs.existsSync(dataPath)){
 	fs.writeFileSync(dataPath, '[]', 'utf-8');
 }
 
+const loadContact = () => {
+    const file = fs.readFileSync('data/contacts.json', 'utf-8');
+	const contacts = JSON.parse(file);
+    return contacts; 
+}
+
 const simpanContact = (nama,email,noHP) => {
 	const contact = {nama, email, noHP};
-	const file = fs.readFileSync('data/contacts.json', 'utf-8');
-	const contacts = JSON.parse(file);
+    const contacts = loadContact();
 
     //cek duplikat
     const duplikat = contacts.find((contact) => contact.nama === nama);
@@ -47,5 +52,44 @@ const simpanContact = (nama,email,noHP) => {
 	console.log(chalk.bgCyanBright.bold(`Terima kasih ${nama} telah memasukkan nomer HP ${noHP} dan Email ${email}`));
 }
 
+const listContact = () => {
+    const contacts = loadContact();
+    console.log(chalk.cyan.inverse.bold('Daftar Contact : '));
+    contacts.forEach((contact, i) =>{
+        console.log(`${i +1}. ${contact.nama} - ${contact.noHP}`)
+    })
+};
 
-module.exports = {simpanContact};
+const detailContact = (nama) => {
+    const contacts = loadContact ();
+
+    const contact = contacts.find((contact)=> contact.nama.toLowerCase() === nama.toLowerCase());
+
+if(!contact){
+    console.log(chalk.bold.red.inverse(`${nama} tidak ditemukan!`));
+    return false;
+}
+
+console.log(chalk.bold.red.inverse(contact.nama));
+console.log(contact.noHP);
+if(contact.email){
+    console.log(contact.email);
+}
+};
+
+const deleteContact = (nama) => {
+    const contacts = loadContact();
+    const newContacts = contacts.filter((contact)=> contact.nama.toLowerCase() !== nama.toLowerCase()
+    );
+
+    if(contacts.length === newContacts.length){
+        console.log(chalk.bold.red.inverse(`${nama} tidak ditemukan!`));
+        return false;
+    }
+
+    fs.writeFileSync('data/contacts.json', JSON.stringify(newContacts, null, 2));
+    console.log(chalk.bgCyanBright.bold(`data contact ${nama} berhasil dihapus !!`));
+
+};
+
+module.exports = {simpanContact, listContact, detailContact, deleteContact};
